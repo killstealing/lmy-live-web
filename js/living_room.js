@@ -47,9 +47,10 @@ new Vue({
             httpPost(anchorConfigUrl, data)
                 .then(resp => {
                     if (isSuccess(resp)) {
-                        if (isSuccess(resp)) {
-                            this.initInfo = resp.data;
-                            console.log(this.initInfo);
+                        if(resp.data.roomId>0) {
+                            that.initInfo = resp.data;
+                        } else {
+                            this.$message.error('直播间已不存在');
                         }
                     }
                 });
