@@ -64,7 +64,7 @@ new Vue({
             .then(resp => {
                 if (isSuccess(resp)) {
                     that.imServerConfig = resp.data;
-                    let url = "ws://"+that.imServerConfig.wsImServerAddress+"/token=" + that.imServerConfig.token+"&userId=45601";
+                    let url = "ws://"+that.imServerConfig.wsImServerAddress+"/" + that.imServerConfig.token+"/"+that.initInfo.userId+"/1001/"+this.roomId;
                     console.log(url);
                     that.websock = new WebSocket(url);
                     that.websock.onmessage = that.websocketOnMessage;
@@ -74,7 +74,9 @@ new Vue({
                     console.log('初始化ws服务器');
                 }
             });
+           
         },
+
 
         websocketOnOpen: function() {
             console.log('初始化连接建立');
@@ -88,6 +90,26 @@ new Vue({
             let wsData = JSON.parse(e.data);
             if(wsData.code == 1001) {
                 this.startHeartBeatJob();
+            } else if (wsData.code == 1003) {
+                let respData = JSON.parse(utf8ByteToUnicodeStr(wsData.body));
+                //属于直播间内的聊天消息
+                if(respData.bizCode==5555) {
+                    let respMsg = JSON.parse(respData.data);
+                    let sendMsg = {"content": respMsg.content, "senderName": respMsg.senderName, "senderImg": respMsg.senderAvtar};
+                    let msgWrapper = {"msgType": 1, "msg": sendMsg};
+                    console.log(sendMsg);
+                    this.chatList.push(msgWrapper);
+                    //注意让滑轮滚到底
+                    this.$nextTick(() => {
+                        var div = document.getElementById('talk-content-box')
+                        div.scrollTop = div.scrollHeight
+                    })
+                    //发送ack确认消息
+                    let jsonStr = {"userId": this.initInfo.userId, "appId": 10001,"msgId":respData.msgId};
+                    let bodyStr = JSON.stringify(jsonStr);
+                    let ackMsgStr = {"magic": 19231, "code": 1005, "len": bodyStr.length, "body": bodyStr};
+                    this.websocketSend(JSON.stringify(ackMsgStr));
+                }
             }
         },
 
@@ -108,7 +130,7 @@ new Vue({
             let heartBeatJsonStr = {"magic": 19231, "code": 1004, "len": bodyStr.length, "body": bodyStr};
             setInterval(function () {
                 that.websocketSend(JSON.stringify(heartBeatJsonStr));
-            }, 3000);
+            }, 30000);
         },
 
         closeLivingRoom: function() {
@@ -122,6 +144,7 @@ new Vue({
             });
         },
 
+
         sendReview: function () {
             if (this.form.review == '') {
                 this.$message({
@@ -130,11 +153,18 @@ new Vue({
                 });
                 return;
             }
-            let sendMsg = {"content": this.form.review, "senderName": this.initInfo.nickname, "senderImg": this.initInfo.avatar};
+            let sendMsg = {"content": this.form.review, "senderName": this.initInfo.nickName, "senderImg": this.initInfo.avatar};
             let msgWrapper = {"msgType": 1, "msg": sendMsg};
             this.chatList.push(msgWrapper);
             //发送评论消息给到im服务器
-            
+            let msgBody = {"roomId":this.roomId,"type":1,"content":this.form.review,  "senderName": this.initInfo.nickName, "senderAvtar": this.initInfo.avatar};
+            console.log(this.initInfo);
+            let jsonStr = {"userId": this.initInfo.userId, "appId": 10001,"bizCode":5555,"data":JSON.stringify(msgBody)};
+            let bodyStr = JSON.stringify(jsonStr);
+            console.log('发送消息');
+            let reviewMsg = {"magic": 19231, "code": 1003, "len": bodyStr.length, "body": bodyStr};
+            console.log(JSON.stringify(reviewMsg));
+            this.websocketSend(JSON.stringify(reviewMsg));
             this.form.review = '';
             this.$nextTick(() => {
                 var div = document.getElementById('talk-content-box')
