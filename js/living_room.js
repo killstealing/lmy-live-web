@@ -61,6 +61,7 @@ new Vue({
         },
         //渲染礼物特效svga
         playGiftSvga: function (url) {
+            url='../svga/gn58do.svga';
             player.clearsAfterStop = true;
             player.stopAnimation();
             console.log(url);
