@@ -9,3 +9,4 @@ let closeLiving = server_addr + apiUrl + "/living/closeLiving";
 let anchorConfigUrl = server_addr + apiUrl + "/living/anchorConfig";
 let listLivingRoomUrl = server_addr + apiUrl +"/living/list";
 let getImConfigUrl = server_addr + apiUrl + "/im/getImConfig";
+let listGiftConfigUrl = server_addr + apiUrl + "/gift/listGift";

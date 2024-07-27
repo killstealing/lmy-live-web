@@ -32,6 +32,8 @@ new Vue({
     mounted() {
         this.roomId = getQueryStr("roomId");
         this.anchorConfigUrl();
+        this.initSvga();
+        this.initGiftConfig();
     },
 
     beforeDestroy() {
@@ -39,6 +41,39 @@ new Vue({
     },
 
     methods: {
+
+        initGiftConfig:function() {
+            let that = this;
+            httpPost(listGiftConfigUrl, {})
+            .then(resp => {
+                if (isSuccess(resp)) {
+                    that.giftList = resp.data;
+                    console.log(resp.data);
+                }
+            });
+        },
+
+        initSvga: function () {
+            canvas = document.getElementById('svga-wrap');
+            player = new window.SVGA.Player(canvas);
+            parser = new window.SVGA.Parser(canvas);
+         
+        },
+        //渲染礼物特效svga
+        playGiftSvga: function (url) {
+            player.clearsAfterStop = true;
+            player.stopAnimation();
+            console.log(url);
+            parser.load(url, function (videoItem) {
+                player.loops = 1; // 设置循环播放次数是1
+                player.setVideoItem(videoItem);
+                player.startAnimation();
+                player.onFinished(function () {
+                    console.log("动画停止了！！！");
+                });
+            });
+        },
+
         //直播间初始化配置加载时候调用
         anchorConfigUrl: function () {
             let data = new FormData();
@@ -130,7 +165,7 @@ new Vue({
             let heartBeatJsonStr = {"magic": 19231, "code": 1004, "len": bodyStr.length, "body": bodyStr};
             setInterval(function () {
                 that.websocketSend(JSON.stringify(heartBeatJsonStr));
-            }, 30000);
+            }, 3000);
         },
 
         closeLivingRoom: function() {
