@@ -34,9 +34,6 @@ new Vue({
 		},
 		initPage:function() {
 			var that = this;
-			if(!this.isLogin) {
-				return;
-			}
 			httpPost(homePageUrl,{}).then(resp=>{
 				//登录成功
 				console.log(resp.data);
@@ -111,7 +108,7 @@ new Vue({
 			}
 			let data = new FormData();
 			data.append("type",livingType);
-			请求开播接口
+			//请求开播接口
 			httpPost(startLiving,data).then(resp=>{
 				//开播成功
 				if(isSuccess(resp)) {
