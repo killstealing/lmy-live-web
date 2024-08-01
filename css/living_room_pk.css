@@ -190,7 +190,6 @@
 }
 
 .svga-wrap {
-    z-index: 999;
     position: absolute;
     top: -10%;
     left: 20%;
@@ -300,12 +299,38 @@
     color: white;
 }
 
-.pk-bar{
-    z-index: 50;
-    position: fixed;
+
+.pk-bar {
+    width: 100%;
+    height: 60px;
+}
+
+.pk-detail-con {
+    width: 90%;
+    position: relative;
+    left: 5%;
     top: 10%;
-    right: 10%;
-    /*background-color: #3a8ee6;*/
-    width: 200px;
-    height: 50px;
+}
+
+.progress {
+    width: 100%;
+    height: 38px;
+    overflow: hidden;
+    background-color: #db1d4e;
+    border-radius: 19px;
+}
+
+.progress-bar {
+    height: 38px;
+    text-align: left;
+    background-color: #4c3de0;
+    -moz-transition: width .6s ease;
+    -webkit-transition: width .6s ease;
+    transition: width .6s ease
+}
+
+.progress, .progress-bar {
+    background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%);
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%);
 }

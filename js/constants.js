@@ -11,3 +11,5 @@ let listLivingRoomUrl = server_addr + apiUrl +"/living/list";
 let getImConfigUrl = server_addr + apiUrl + "/im/getImConfig";
 let listGiftConfigUrl = server_addr + apiUrl + "/gift/listGift";
 let sendGiftUrl = server_addr + apiUrl + "/gift/send";
+let payProductsUrl = server_addr + apiUrl + "/bank/products";
+let payProductUrl = server_addr + apiUrl + "/bank/payProduct";
