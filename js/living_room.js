@@ -22,6 +22,7 @@ new Vue({
         showBankInfo: false,
         lastPayBtnId: -1,
         payProducts: [],
+        nickname:'',
         qrCode: '',
         dlProgress: 10,
         closeLivingRoomDialog: false,
@@ -59,9 +60,22 @@ new Vue({
             parser = new window.SVGA.Parser(canvas);
          
         },
+        sendGift: function(giftId) {
+            let data = new FormData();
+			data.append("giftId",giftId);
+            data.append("roomId",getQueryStr("roomId"));
+            data.append("receiverId",this.initInfo.anchorId);
+            let that = this;
+            httpPost(sendGiftUrl, data)
+            .then(resp => {
+                if (!isSuccess(resp)) {
+                    that.$message.error('送礼异常');
+                }
+            });  
+        },
+
         //渲染礼物特效svga
         playGiftSvga: function (url) {
-            url='../svga/gn58do.svga';
             player.clearsAfterStop = true;
             player.stopAnimation();
             console.log(url);
@@ -141,14 +155,26 @@ new Vue({
                         div.scrollTop = div.scrollHeight
                     })
                     //发送ack确认消息
-                    let jsonStr = {"userId": this.initInfo.userId, "appId": 10001,"msgId":respData.msgId};
-                    let bodyStr = JSON.stringify(jsonStr);
-                    let ackMsgStr = {"magic": 19231, "code": 1005, "len": bodyStr.length, "body": bodyStr};
-                    this.websocketSend(JSON.stringify(ackMsgStr));
+                } else if(respData.bizCode == 5556) {
+                    //送礼成功
+                    let respMsg = JSON.parse(respData.data);
+                    this.playGiftSvga(respMsg.url);
+                } else if(respData.bizCode == 5557){
+                    //送礼失败
+                    let respMsg = JSON.parse(respData.data);
+                    this.$message.error(respMsg.msg);
                 }
+                this.sendAckCode(respData);
             }
         },
 
+        sendAckCode: function(respData) {
+            let jsonStr = {"userId": this.initInfo.userId, "appId": 10001,"msgId":respData.msgId};
+            let bodyStr = JSON.stringify(jsonStr);
+            let ackMsgStr = {"magic": 19231, "code": 1005, "len": bodyStr.length, "body": bodyStr};
+            this.websocketSend(JSON.stringify(ackMsgStr));
+        },
+ 
         websocketSend:function (data) {//数据发送
             this.websock.send(data);
         },

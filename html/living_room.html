@@ -71,7 +71,6 @@
                     <img :src="initInfo.avatar" style="height: 30px;width: 30px;border-radius: 50%;" alt="">
                 </span>
                 <span style="position:relative;top: -12px;">
-                   {{initInfo.nickname}}
                 </span>
             </span>
 
@@ -105,8 +104,7 @@
                     <span style="color: white">{{accountInfo.currentBalance}}</span>
                 </div>
                 <div class="gift_item" v-for="item in giftList">
-                    <img @click="playGiftSvga(item.svgaUrl)" :src="item.coverImgUrl" class="gift_img" alt="">
-                    <!-- <img @click="sendGift(item.svgaUrl,item.giftId, item.giftName)" :src="item.coverImgUrl" class="gift_img" alt=""> -->
+                    <img @click="sendGift(item.giftId)" :src="item.coverImgUrl" class="gift_img" alt="">
                     <div class="gift_item_name">{{item.giftName}}</div>
                     <div class="gift_item_price">{{item.price}}旗鱼币</div>
                 </div>
