@@ -28,7 +28,8 @@ new Vue({
         dlProgress: 10,
         closeLivingRoomDialog: false,
         livingRoomHasCloseDialog: false,
-        timer: null
+        timer: null,
+        lastChooseAnchorTab: ''
     },
 
     mounted() {
@@ -125,6 +126,18 @@ new Vue({
 
         hiddenBankInfoTabNow:function() {
             this.showBankInfo = false;
+        },
+
+         //给指定主播送礼
+        chooseAnchor: function (id) {
+            console.log('选中主播id' + id);
+            let lastChooseAnchor = document.getElementById(this.lastChooseAnchorTab);
+            if (lastChooseAnchor != undefined) {
+                lastChooseAnchor.style.border = "rgba(255,165,0,0) 3px solid";
+            }
+            let currentChooseAnchor = document.getElementById(id);
+            currentChooseAnchor.style.border = "rgba(255,165,0,1) 3px solid";
+            this.lastChooseAnchorTab = id;
         },
         
         //直播间初始化配置加载时候调用

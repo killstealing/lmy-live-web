@@ -5,7 +5,7 @@
     <title>直播间页面</title>
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/living_room.css">
+    <link rel="stylesheet" href="../css/living_room_pk.css">
     <!-- 引入ElementUI组件库 -->
     <script src="../js/vue.js"></script>
     <script src="../js/index.js"></script>
@@ -92,9 +92,28 @@
 
             <div id="svga-wrap" class="svga-wrap">
             </div>    
-            <video width="100%" style="background-color: rgb(18, 9, 37);">
-                <!-- <source src="test.mp4"> -->
-            </video>
+            <div  style="display: inline-block;text-align: center;width: 100%;background-color: black;">
+                <div style="height: 100px;"></div>
+                <span @click="chooseAnchor('anchorVideo')">
+                    <video  width="48%" id="anchorVideo" style="display: inline-block;
+                    border: rgba(255,165,0,0) 3px solid;"/>
+                </span>
+                <span @click="chooseAnchor('subAnchorVideo')">
+                    <video width="48%" id="subAnchorVideo"
+                           style="display: inline-block;
+                           border: rgba(255,165,0,0) 3px solid;"/>
+                </span>
+                <div style="height: 50px;"></div>
+                <div class="pk-bar">
+                        <div class="pk-detail-con">
+                            <div class="progress">
+                                <div class="progress-bar" id="pkBar" style="width: 50%;">
+                                    <i class="lightning"></i>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
             <div class="gift_content">
                 <div class="gift_content_title">礼物面板</div>
                 <div class="bank_tab" >
@@ -190,7 +209,7 @@
 <script src="../js/axios.min.js"></script>
 <script src="../js/constants.js"></script>
 <script src="../js/utils.js"></script>
-<script src="../js/living_room.js"></script>
+<script src="../js/living_room_pk.js"></script>
 
 
 </body>
