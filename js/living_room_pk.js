@@ -29,6 +29,8 @@ new Vue({
         closeLivingRoomDialog: false,
         livingRoomHasCloseDialog: false,
         timer: null,
+        pkUserId:0,
+        pkObjId:0,
         lastChooseAnchorTab: ''
     },
 
@@ -120,6 +122,19 @@ new Vue({
             });  
         },
 
+        connectLiving: function() {
+          console.log('连线');
+          let that = this;
+          httpPost(onlinePkUrl, data)
+          .then(resp => {
+              if (isSuccess(resp)) {
+                that.$message.success('连线成功');
+              } else {
+                that.$message.success(resp.msg);
+              }
+          });
+        },
+
         showBankInfoTab:function() {
           this.showBankInfo=true;
         },
@@ -128,9 +143,17 @@ new Vue({
             this.showBankInfo = false;
         },
 
+        choosePkUserAnchor: function() {
+            this.chooseAnchor('anchorVideo',this.pkUserId);
+        },
+        
+        choosePkObjectAnchor: function() {
+            this.chooseAnchor('subAnchorVideo',this.pkObjId);
+        },
+
          //给指定主播送礼
-        chooseAnchor: function (id) {
-            console.log('选中主播id' + id);
+        chooseAnchor: function (id,anchorId) {
+            console.log('选中主播id' + anchorId);
             let lastChooseAnchor = document.getElementById(this.lastChooseAnchorTab);
             if (lastChooseAnchor != undefined) {
                 lastChooseAnchor.style.border = "rgba(255,165,0,0) 3px solid";
@@ -214,6 +237,11 @@ new Vue({
                     //送礼失败
                     let respMsg = JSON.parse(respData.data);
                     this.$message.error(respMsg.msg);
+                } else if(respData.bizCode == 5558){
+                    this.$message.success("pk礼物送礼成功");
+                }else if(respData.bizCode == 5559){
+                    //送礼失败
+                    this.$message.success("pk用户已上线");
                 }
                 this.sendAckCode(respData);
             }

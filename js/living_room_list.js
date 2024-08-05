@@ -113,8 +113,13 @@ new Vue({
 			httpPost(startLiving,data).then(resp=>{
 				//开播成功
 				if(isSuccess(resp)) {
-				    //去直播间详情页面
-					window.location.href = "./living_room.html?roomId=" + resp.data.roomId;
+					if(livingType == 1) {
+						//去直播间详情页面
+						window.location.href = "./living_room.html?roomId=" + resp.data.roomId;
+					} else if (livingType==2) {
+						window.location.href = "./living_room_pk.html?roomId=" + resp.data.roomId;
+					}
+				    
 				} else {
 					that.$message.error(resp.msg);
 				}

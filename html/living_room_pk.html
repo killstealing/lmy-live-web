@@ -94,11 +94,11 @@
             </div>    
             <div  style="display: inline-block;text-align: center;width: 100%;background-color: black;">
                 <div style="height: 100px;"></div>
-                <span @click="chooseAnchor('anchorVideo')">
-                    <video  width="48%" id="anchorVideo" style="display: inline-block;
+                <span @click="choosePkUserAnchor()">
+                    <video  width="48%" id="anchorVideo"  style="display: inline-block;
                     border: rgba(255,165,0,0) 3px solid;"/>
                 </span>
-                <span @click="chooseAnchor('subAnchorVideo')">
+                <span @click="choosePkObjectAnchor()">
                     <video width="48%" id="subAnchorVideo"
                            style="display: inline-block;
                            border: rgba(255,165,0,0) 3px solid;"/>
@@ -121,6 +121,9 @@
                         钱包余额:
                     </span>
                     <span style="color: white">{{currentBalance}}</span>
+                    <span style="margin-left: 30px;" @click="connectLiving()">
+                        连线
+                    </span>
                 </div>
                 <div class="gift_item" v-for="item in giftList">
                     <img @click="sendGift(item.giftId)" :src="item.coverImgUrl" class="gift_img" alt="">
