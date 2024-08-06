@@ -30,15 +30,6 @@
             <span class="top-title top-title-link" onclick="window.location.href='./living_room_list.html'">
                 主播PK
             </span>
-            <span class="top-title top-title-link" onclick="window.location.href='./living_room_list.html'">
-                周边
-            </span>
-            <span class="top-title top-title-link" onclick="window.location.href='./living_room_list.html'">
-                体育
-            </span>
-            <span class="top-title top-title-link" onclick="window.location.href='./living_room_list.html'">
-                游戏
-            </span>
             <span>
                 <input type="search" class="top-search-input" placeholder="输入你想查找的东西">
             </span>
@@ -68,7 +59,8 @@
                   </span>
                 </el-dialog>
                 <span>
-                    <img :src="initInfo.avatar" style="height: 30px;width: 30px;border-radius: 50%;" alt="">
+                    <span class="living-room-top-tab-name">用户:{{initInfo.userId}}</span>
+                    <img :src="initInfo.watcherAvatar" style="height: 30px;width: 30px;border-radius: 50%;" alt="">
                 </span>
                 <span style="position:relative;top: -12px;">
                 </span>
@@ -83,10 +75,10 @@
             <div class="liveroom_top">
                 <div style="position: relative;top: -30px;">
                     <div class="anchor_name">
-                        <div style="display: inline-block;">主播名称</div>
+                        <div style="display: inline-block;">{{initInfo.nickName}}</div>
                         <img src="../img/living.jpg" class="anchor_label" alt="">
                     </div>
-                    <img src="../img/anchor.jpeg" class="anchor_img" alt="">
+                    <img :src="initInfo.avatar" class="anchor_img" alt="">
                 </div>
             </div>
 

@@ -33,7 +33,7 @@ new Vue({
 
     mounted() {
         this.roomId = getQueryStr("roomId");
-        this.anchorConfigUrl();
+        this.anchorConfig();
         this.initSvga();
         this.initGiftConfig();
         this.listPayProduct();
@@ -79,6 +79,7 @@ new Vue({
         sendGift: function(giftId) {
             let data = new FormData();
 			data.append("giftId",giftId);
+            data.append("type",0);
             data.append("roomId",getQueryStr("roomId"));
             data.append("receiverId",this.initInfo.anchorId);
             let that = this;
@@ -115,6 +116,9 @@ new Vue({
             .then(resp => {
                 if (!isSuccess(resp)) {
                     that.$message.error('充值异常');
+                } else {
+                    that.$message.success('充值成功');
+                    that.listPayProduct();
                 }
             });  
         },
@@ -128,7 +132,7 @@ new Vue({
         },
         
         //直播间初始化配置加载时候调用
-        anchorConfigUrl: function () {
+        anchorConfig: function () {
             let data = new FormData();
 			data.append("roomId",getQueryStr("roomId"));
             var that = this;
