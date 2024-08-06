@@ -25,20 +25,11 @@
                 <span class="top-title">
                     旗鱼直播
                 </span>
-                <span class="top-title top-title-link">
+                <span class="top-title top-title-link" id="default_living_room" @click="chooseLivingType(1,'default_living_room')">
                     直播间
                 </span>
-                <span class="top-title top-title-link">
+                <span class="top-title top-title-link" id="pk_living_room" @click="chooseLivingType(2,'pk_living_room')">
                     主播PK
-                </span>
-                <span class="top-title top-title-link">
-                    周边
-                </span>
-                <span class="top-title top-title-link">
-                    体育
-                </span>
-                <span class="top-title top-title-link">
-                    游戏
                 </span>
                 <span>
                     <input type="search" class="top-search-input" placeholder="输入你想查找的东西">
@@ -76,8 +67,8 @@
                     <div id="living_room_list_div">
                     <el-row  :gutter="24" >
                         <el-col :span="6" v-for="item in livingRoomList"  >
-                            <img :src="item.covertImg" class="living_room_cover" @click="jumpToLivingRoom(item.id)">
-                            <div class="living_room_tab" @click="jumpToLivingRoom(item.id)">
+                            <img :src="item.covertImg" class="living_room_cover" @click="jumpToLivingRoom(item.id,item.type)">
+                            <div class="living_room_tab" @click="jumpToLivingRoom(item.id,item.type)">
                                 <img src="../img/head.jpeg" alt="" class="living_room_head">
                                 <span class="living_room_name">{{item.roomName}}</span>
                                 <span class="online_count"><i class="el-icon-view"></i>{{item.watchNum}}</span>

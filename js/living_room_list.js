@@ -18,13 +18,14 @@ new Vue({
 		pageSize:15,
 		startLivingRoomTab: false,
 		loadingNextPage: false,
-		hasNextPage: true
+		hasNextPage: true,
+		currentChooseTab: null
 	},
 
 	//页面初始化的时候会调用下这里面的方法
 	mounted() {
 		this.initPage();
-		this.listLivingRoom();
+		this.listLivingRoom(1);
 		this.initLoad();
 		console.log('handler');
 	},
@@ -44,12 +45,22 @@ new Vue({
 				}
 			})
 		},
-		listLivingRoom: function() {
+
+		chooseLivingType: function(type,id) {
+			this.listLivingRoom(type);
+			if(this.currentChooseTab!=null) {
+				this.currentChooseTab.classList.remove('top-title-active');
+			}
+			this.currentChooseTab = document.getElementById(id);
+			this.currentChooseTab.classList.add('top-title-active');
+		},
+
+		listLivingRoom: function(type) {
 			var that = this;
 			let data = new FormData();
 			data.append("page",this.page);
 			data.append("pageSize",this.pageSize);
-			data.append("type",this.listType);
+			data.append("type",type);
 			httpPost(listLivingRoomUrl,data).then(resp=>{
 				console.log('直播间列表');
 				//登录成功
@@ -126,12 +137,16 @@ new Vue({
 			})
 
         },
-		jumpToLivingRoom(roomId) {
+		jumpToLivingRoom(roomId,type) {
 			if(!this.isLogin) {
 				this.$message.error('请先登录');
 				return;
 			}
-			window.location.href = "./living_room.html?roomId=" + roomId;
+			if(type==1) {
+				window.location.href = "./living_room.html?roomId=" + roomId;
+			} else if(type==2) {
+				window.location.href = "./living_room_pk.html?roomId=" + roomId;
+			}
 		},
 
 		sendSmsCode: function () {
