@@ -168,7 +168,7 @@
     height: 23px;
     position: relative;
     top: 65px;
-    left: -60px;
+    left: 35px;
 }
 
 .anchor_label_long {
@@ -284,6 +284,10 @@
 .coin_um {
     font-size: 12px;
     /*color: #f37d08;*/
+}
+
+.prepare_red_packet {
+    margin-right: 50px;
 }
 
 .coin_um:hover {

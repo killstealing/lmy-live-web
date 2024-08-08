@@ -6,16 +6,34 @@
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/living_room.css">
+    <link rel="stylesheet" href="../css/red_packet.css">
     <!-- 引入ElementUI组件库 -->
     <script src="../js/vue.js"></script>
     <script src="../js/index.js"></script>
-</head>
+    <script src="../js/red_packet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svgaplayerweb@2.0.7/build/svga.min.js"></script>
 <!--<script src="https://cdn.jsdelivr.net/npm/svga.lite/svga.lite.min.js"></script>-->
-<script src="https://cdn.jsdelivr.net/npm/svgaplayerweb@2.0.7/build/svga.min.js"></script>
+</head>
+<style>
+    body{
+        overflow: hidden;
+    }
+</style>
+
 <body class="main-content">
 
 <div id="app">
-
+    <div class="red-packet-wrap">
+        <div id="wrapper" >
+            <img  src="../img/petal.jpg" style="width: 140px;">
+        </div>
+        <div id="modol">
+            <div id="hb">
+                <div id="text"></div>
+                <div id="btn">继续抢红包</div>
+            </div>
+        </div>
+    </div>
     <div class="top-tab">
         <div>
             <span>
@@ -84,12 +102,16 @@
 
             <div id="svga-wrap" class="svga-wrap">
             </div>    
-            <video width="100%" style="background-color: rgb(18, 9, 37);">
+            <video :poster="initInfo.avatar" width="100%" style="background-color: rgb(18, 9, 37);">
                 <!-- <source src="test.mp4"> -->
             </video>
             <div class="gift_content">
                 <div class="gift_content_title">礼物面板</div>
                 <div class="bank_tab" >
+                    <!-- <span :visible.sync="showPrepareBtn"> 
+                        <el-button 
+                        type="danger" class="prepare_red_packet" @click="prepareRedPacket">红包雨预热</el-button>
+                    </span> -->
                     <span @click="showBankInfoTab()">
                         钱包余额:
                     </span>
@@ -129,24 +151,6 @@
                 </div>
             </div>
         </div>
-        <div class="grey_bg" v-show="showGiftRank==true" @click="hiddenGiftRankNow()">
-            <!-- 送礼榜单模块-->
-            <div class="gift_rank_div">
-                <div style="margin-top: 30px;margin-bottom: 30px;">
-                    <div class="gift_rank_title"><b>送礼榜单</b></div>
-                    <el-row :gutter="24">
-                        <el-col :span="24" v-for="item in rankList">
-                            <div style="background-color: #F9EFEF;width: 90%;position:relative;left: 5%;padding-top: 6px;">
-                                <span class="gift_rank_index">{{item.index}}</span>
-                                <img :src="item.avatar" class="gift_rank_avatar">
-                                <span class="gift_rank_nickname">{{item.nickname}}</span>
-                            </div>
-                            <span class="gift_rank_value"><b>{{item.score}}</b></span>
-                        </el-col>
-                    </el-row>
-                </div>
-            </div>
-        </div>
         <el-col :span="5">
             <div class="talk-content-box" id="talk-content-box">
                 <div style="margin-left: 20px;margin-top: 20px;" v-for='chatItem in chatList'>
@@ -171,6 +175,8 @@
                         <el-input v-model="form.review" @keyup.enter.native="sendReview" placeholder="发送直播评论"></el-input>
                     </el-form-item>
                     <el-form-item style="text-align:right;">
+                        <el-button type="danger" v-if="showPrepareBtn" @click="prepareRedPacket">初始化红包雨</el-button>
+                        <el-button type="success" v-if="showStartBtn" @click="startSendRedPacket">开始派发红包雨</el-button>
                         <el-button type="primary" @click="sendReview">发送消息</el-button>
                     </el-form-item>
                 </el-form>

@@ -26,9 +26,13 @@ new Vue({
         currentBalance:0,
         qrCode: 'true',
         dlProgress: 10,
+        redPacketConfigCode: '',
+        showPrepareBtn:false,
+        showStartBtn: false,
         closeLivingRoomDialog: false,
         livingRoomHasCloseDialog: false,
-        timer: null
+        timer: null,
+        startingRedPacket:false
     },
 
     mounted() {
@@ -86,7 +90,7 @@ new Vue({
             httpPost(sendGiftUrl, data)
             .then(resp => {
                 if (!isSuccess(resp)) {
-                    that.$message.error('送礼异常');
+                    that.$message.error(resp.msg);
                 }
             });  
         },
@@ -142,11 +146,46 @@ new Vue({
                         if(resp.data.roomId>0) {
                             that.initInfo = resp.data;
                             that.connectImServer();
+                            that.redPacketConfigCode = resp.data.redPacketConfigCode;
+                            that.showPrepareBtn = (that.redPacketConfigCode!=null);
                         } else {
                             this.$message.error('直播间已不存在');
                         }
                     }
                 });
+        },
+
+        prepareRedPacket: function() {
+            let data = new FormData();
+			data.append("roomId",getQueryStr("roomId"));
+            httpPost(prepareRedPacketUrl, data)
+                .then(resp => {
+                    if (isSuccess(resp)) {
+                       if(!resp.data) {
+                         this.$message.error(resp.msg);
+                       } else {
+                         this.showStartBtn = true;
+                         this.showPrepareBtn = false;
+                         this.$message.success('红包数据初始化完成');
+                       }
+                    }
+                });
+        },
+
+        startSendRedPacket: function() {
+                let data = new FormData();
+                data.append("redPacketConfigCode",this.redPacketConfigCode);
+                httpPost(startRedPacketUrl, data)
+                    .then(resp => {
+                        if (isSuccess(resp)) {
+                            if(!resp.data) {
+                                this.$message.error('红包广播失败');
+                            } else {
+                                this.showStartBtn = false;
+                                this.$message.success('已发送广播通知');
+                            }
+                        }
+                    });
         },
         
 
@@ -205,6 +244,17 @@ new Vue({
                     //送礼失败
                     let respMsg = JSON.parse(respData.data);
                     this.$message.error(respMsg.msg);
+                } else if (respData.bizCode == 5560) {
+                    if(!this.startingRedPacket) {
+                        this.startingRedPacket=true;
+                        //开始红包雨活动
+                        let respMsg = JSON.parse(respData.data);
+                        let redPacketConfig = JSON.parse(respMsg.redPacketConfig);
+                        console.log(redPacketConfig.totalCount);
+                        console.log(redPacketConfig.configCode);
+                        initRedPacket(redPacketConfig.totalCount,redPacketConfig.configCode);
+                    }
+                   
                 }
                 this.sendAckCode(respData);
             }
