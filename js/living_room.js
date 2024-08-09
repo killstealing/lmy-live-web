@@ -29,10 +29,18 @@ new Vue({
         redPacketConfigCode: '',
         showPrepareBtn:false,
         showStartBtn: false,
+        showShopTab: false,
+        showCarTab:false,
         closeLivingRoomDialog: false,
         livingRoomHasCloseDialog: false,
         timer: null,
-        startingRedPacket:false
+        startingRedPacket:false,
+        shopInfoList:[],
+        shopDetailInfo:{},
+        shopCarInfo:[],
+        showOrderTab: false,
+        address:'',
+        shopCarTotalPrice:0
     },
 
     mounted() {
@@ -41,6 +49,7 @@ new Vue({
         this.initSvga();
         this.initGiftConfig();
         this.listPayProduct();
+        this.queryShopInfo();
     },
 
     beforeDestroy() {
@@ -49,15 +58,152 @@ new Vue({
 
     methods: {
 
+        turnBackShopCar:function() {
+                this.showOrderTab=false;
+        },
+
+
+        prepareOrder: function() {
+            if(this.address=='') {
+                this.$message.error('请在填写收货地址后，再下单');
+                return;
+            }
+            console.log(this.shopCarInfo);
+            if(this.shopCarInfo.length<1) {
+                this.$message.error('请先将商品加入购物车后再下单');
+                return;
+            }
+            this.showOrderTab=true;
+            this.$message.success('已生成订单，待确认');
+            this.createPrepareOrderInfo();
+        },
+
+        payNow:function() {
+            let data = new FormData();
+            data.append("roomId",getQueryStr("roomId"));
+            var that = this;
+            httpPost(payNowUrl,data).then(
+                resp=>{
+                    if(isSuccess(resp) && resp.data) {
+                        that.$message.success("支付成功");
+                        that.hiddenGreyTab();
+                        that.listPayProduct();
+                    }
+                }
+            )    
+        },
+        createPrepareOrderInfo:function() {
+            let data = new FormData();
+            data.append("roomId",getQueryStr("roomId"));
+            var that = this;
+            httpPost(createPrepareOrderInfoUrl,data).then(
+                resp=>{
+                    if(isSuccess(resp)) {
+                        console.log(resp);
+                        that.shopCarTotalPrice = resp.data.totalPrice;
+                    }
+                }
+            )
+        },
+
+        queryShopInfo: function() {
+            let data = new FormData();
+            data.append("roomId",getQueryStr("roomId"));
+            var that = this;
+            httpPost(queryShopInfoUrl,data).then(
+                resp=>{
+                    if(isSuccess(resp)) {
+                        that.shopInfoList = resp.data;
+                    }
+                }
+            )
+        },
+
+        removeShopCarItem: function(skuId) {
+            let data = new FormData();
+            data.append("roomId",getQueryStr("roomId"));
+            data.append("skuId",skuId);
+            var that = this;
+            httpPost(removeFromCarUrl,data).then(
+                resp=>{
+                    if(isSuccess(resp)) {
+                      that.$message.success('移除商品');
+                      that.getCarInfo();
+                    }
+                }
+            )
+        },
+
+        queryShopDetailInfo:function(skuId) {
+            let data = new FormData();
+            data.append("skuId",skuId);
+            var that = this;
+            httpPost(queryShopDetailInfoUrl,data).then(
+                resp=>{
+                    if(isSuccess(resp)) {
+                        that.shopDetailInfo = resp.data;
+                    }
+                }
+            )
+        },
+
+        addShopCar:function(skuId) {
+            let data = new FormData();
+            data.append("skuId",skuId);
+            data.append("roomId",getQueryStr("roomId"));
+            var that = this;
+            httpPost(addShopCarUrl,data).then(
+                resp=>{
+                    if(isSuccess(resp)) {
+                        that.$message.success('已加入购物车');
+                        that.hiddenCarTab();
+                    }
+                }
+            )
+        },
+
         initGiftConfig:function() {
             let that = this;
             httpPost(listGiftConfigUrl, {})
             .then(resp => {
                 if (isSuccess(resp)) {
                     that.giftList = resp.data;
-                    console.log(resp.data);
                 }
             });
+        },
+
+        getCarInfo:function() {
+            let data = new FormData();
+            data.append("roomId",getQueryStr("roomId"));
+            var that = this;
+            httpPost(getCarInfoUrl,data).then(
+                resp=>{
+                    if(isSuccess(resp)) {
+                        console.log(resp.data);
+                        that.shopCarInfo=resp.data.shopCarItemRespDTOS;
+                        that.shopCarTotalPrice = resp.data.totalPrice;
+                    }
+                }
+            )
+        },
+
+        toShowShopTab: function(skuId) {
+            this.showShopTab = true;
+            this.queryShopDetailInfo(skuId);
+        },
+
+        toShowCarTab: function() {
+            this.showCarTab = true;
+            this.getCarInfo();    
+        },
+
+        hiddenCarTab: function(){
+            this.showCarTab = false;
+        },
+
+        hiddenGreyTab: function() {
+            this.showShopTab = false;
+            this.showCarTab = false
         },
 
         initSvga: function () {
