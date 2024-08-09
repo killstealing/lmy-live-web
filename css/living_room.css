@@ -9,12 +9,25 @@
     margin-top: 240px;
 }
 
+.clear-shop-info-btn {
+    position: relative;
+    top: -20px;
+    left: 130px;
+}
+
+.pre_order_total_price{
+    text-align: center;
+    color: orange;
+    margin-top: 20px;
+}
+
 .talk-content-box {
     background-color: white;
     overflow-y: scroll;
     height: 700px;
     border: solid 1px rgba(225, 225, 225, 0.37);
     border-radius: 3px;
+    margin-top: 80px;
     /*background-color: white;*/
     /*background-color: #272727*/
 
@@ -288,6 +301,70 @@
 
 .prepare_red_packet {
     margin-right: 50px;
+}
+
+
+.car_item_img{
+    width: 50px;
+    height: 50px;
+}
+
+.car_item_desc{
+    position: relative;
+    top: -20px;
+    left: 30px;
+}
+
+.car_item {
+    position: relative;
+    left: 200px;
+    top: 20px;
+}
+
+.car_tab,.shop_tab {
+    position: fixed;
+    left: 30%;
+    top: 30%;
+    z-index: 1001;
+    width: 40%;
+    height: 400px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.shop_detail_img {
+    margin-top: 20px;
+    width: 200px;
+    height: 200px;
+}
+
+
+.shop_info{
+    width: 70px;
+    height: 70px;
+    z-index: 99999;
+    position: relative;
+    top: 150px;
+    left: -73px;
+}
+.shop_img_head {
+    text-align: center;
+    font-size: 15px;
+    position: relative;
+    left: 3px;
+    background-color: orange;
+    color: white;
+    padding: 10px 5px;
+    /* margin-bottom: 10px; */
+}
+.shop_img{
+    width: 69px;
+    height: 69px;
+    border: solid 2px orange;
+}
+.shop_img:hover {
+    transition: all 0.1s;
+    transform: scale(1.3);
 }
 
 .coin_um:hover {
